@@ -1,0 +1,44 @@
+.page {
+  min-height: 100vh;
+  background: #fff;
+  padding-top: 76px;
+  display: flex;
+  flex-direction: column;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px;
+}
+
+.card {
+  width: 435px;
+  height: 326px;
+  border-radius: 8px;
+  background: rgba(180, 117, 82, 0.08);
+  border: 3px solid #B47552;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 36px rgba(180, 117, 82, 0.22);
+  transform: translateY(-4px);
+  border-color: #56280F;
+}
+
+.cardText {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #1E1E1E;
+  text-align: center;
+  padding: 0 32px;
+}

@@ -1,0 +1,91 @@
+.page {
+  min-height: 100vh;
+  background: #fff;
+  padding-top: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.modal {
+  width: 842px;
+  border-radius: 13.5px;
+  background: rgba(180, 117, 82, 0.07);
+  border: 2.5px solid #56280F;
+  padding: 56px 72px 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1E1E1E;
+  text-align: center;
+  margin-bottom: 28px;
+  line-height: 1.5;
+  max-width: 560px;
+}
+
+.italic {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: #1E1E1E;
+  line-height: 1.8;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.boldLabel {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E1E1E;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.boldCta {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E1E1E;
+  line-height: 1.65;
+  width: 100%;
+  text-align: left;
+  margin-top: 14px;
+  margin-bottom: 40px;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn {
+  width: 289px;
+  height: 60px;
+  border-radius: 10px;
+  background: #56280F;
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 400;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn:hover {
+  background: #3d1c07;
+  transform: translateY(-1px);
+}
