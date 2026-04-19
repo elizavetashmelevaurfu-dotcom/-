@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import { createAnketa } from '../api/anketa';
 import s from './FormPage.module.css';
 
 export default function FormPage({ onBack, onLogoClick }) {
@@ -31,6 +32,11 @@ export default function FormPage({ onBack, onLogoClick }) {
   const [budgetMin,  setBudgetMin]  = useState('');
   const [budgetMax,  setBudgetMax]  = useState('');
 
+  /* Состояние запроса */
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+  const [success, setSuccess] = useState(false);
+
   const metroTimeOpts = [
     { label: 'до 5 минут',  val: '5'     },
     { label: '10-15 минут', val: '10-15' },
@@ -44,7 +50,7 @@ export default function FormPage({ onBack, onLogoClick }) {
     'Черновая',    'Чистовая',                     'С отделкой и мебелью',
   ];
 
-  
+  /* Кастомный скроллбар */
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -69,6 +75,30 @@ export default function FormPage({ onBack, onLogoClick }) {
     if (e.key === 'Enter') addTag(val, setVal, list, setList);
   };
 
+  /* Отправка на бек */
+  const handleSave = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      const res = await createAnketa({
+        cities, metros, districts,
+        metroTime, aptTypes,
+        euroFormat, euroTypes,
+        areaMin, areaMax,
+        floorMin, floorMax,
+        finishes,
+        budgetMin, budgetMax,
+      });
+      localStorage.setItem('anketaId', res.id);
+      setSuccess(true);
+    } catch (e) {
+      setError(e.message || 'Ошибка при сохранении');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={s.page}>
       <Navbar onLogoClick={onLogoClick} />
@@ -77,12 +107,10 @@ export default function FormPage({ onBack, onLogoClick }) {
 
         <div className={s.modalWrap}>
 
-          
           <div className={s.modal} ref={scrollRef}>
             <button className={s.closeBtn} onClick={onBack}>×</button>
 
-            
-            
+            {/* Имя */}
             <input
               className={s.input}
               placeholder="Введите ваше имя"
@@ -105,11 +133,10 @@ export default function FormPage({ onBack, onLogoClick }) {
 
             <hr className={s.divider} />
 
-            
+            {/* Локация */}
             <h3 className={s.sectionTitle}>Локация</h3>
 
             <div className={s.locRow}>
-              
               <div>
                 <input
                   className={s.input}
@@ -127,7 +154,6 @@ export default function FormPage({ onBack, onLogoClick }) {
                   ))}
                 </div>
               </div>
-              
               <div>
                 <input
                   className={s.input}
@@ -148,7 +174,6 @@ export default function FormPage({ onBack, onLogoClick }) {
             </div>
 
             <div className={s.locRow}>
-              
               <div>
                 <input
                   className={s.input}
@@ -166,7 +191,6 @@ export default function FormPage({ onBack, onLogoClick }) {
                   ))}
                 </div>
               </div>
-              
               <div>
                 <p className={s.subTitle} style={{ marginTop: 0 }}>Сколько времени до метро</p>
                 <div className={s.cbGrid2}>
@@ -185,7 +209,7 @@ export default function FormPage({ onBack, onLogoClick }) {
 
             <hr className={s.divider} />
 
-            
+            {/* Параметры квартиры */}
             <h3 className={s.sectionTitle}>Параметры квартиры</h3>
             <p className={s.subTitle}>Тип квартиры</p>
             <div className={s.cbGrid4}>
@@ -200,10 +224,9 @@ export default function FormPage({ onBack, onLogoClick }) {
               ))}
             </div>
 
-            
             <hr className={s.divider} />
 
-            
+            {/* Евро-формат */}
             <div className={s.toggleRow}>
               Евро-формат квартиры (кухня совмещена с гостиной)
               <div
@@ -226,7 +249,7 @@ export default function FormPage({ onBack, onLogoClick }) {
               ))}
             </div>
 
-            
+            {/* Площадь */}
             <div className={s.twoCol}>
               <div>
                 <p className={s.subTitle}>Минимальная площадь</p>
@@ -246,7 +269,7 @@ export default function FormPage({ onBack, onLogoClick }) {
               </div>
             </div>
 
-            
+            {/* Этаж */}
             <p className={s.subTitle}>Этаж</p>
             <div className={s.floorRow}>
               <span className={s.floorLabel}>от</span>
@@ -261,7 +284,7 @@ export default function FormPage({ onBack, onLogoClick }) {
                 value={floorMax} onChange={e => setFloorMax(Number(e.target.value))} />
             </div>
 
-            
+            {/* Вид отделки */}
             <p className={s.subTitle}>Вид отделки</p>
             <div className={s.cbGrid3}>
               {finishOpts.map(o => (
@@ -277,7 +300,7 @@ export default function FormPage({ onBack, onLogoClick }) {
 
             <hr className={s.divider} />
 
-            
+            {/* Бюджет */}
             <h3 className={s.sectionTitle}>Бюджет</h3>
             <div className={s.twoCol}>
               <div>
@@ -285,7 +308,7 @@ export default function FormPage({ onBack, onLogoClick }) {
                 <div className={s.inputWithUnit}>
                   <input className={s.input} placeholder="Введите число"
                     value={budgetMin} onChange={e => setBudgetMin(e.target.value)} />
-                  <span className={s.unit}>кв.м</span>
+                  <span className={s.unit}>руб.</span>
                 </div>
               </div>
               <div>
@@ -293,15 +316,38 @@ export default function FormPage({ onBack, onLogoClick }) {
                 <div className={s.inputWithUnit}>
                   <input className={s.input} placeholder="Введите число"
                     value={budgetMax} onChange={e => setBudgetMax(e.target.value)} />
-                  <span className={s.unit}>кв.м</span>
+                  <span className={s.unit}>руб.</span>
                 </div>
               </div>
             </div>
 
-            <button className={s.saveBtn} onClick={onBack}>Сохранить анкету</button>
+            {/* Сообщения */}
+            {error && (
+              <p style={{ color: '#c0392b', fontSize: 13, textAlign: 'center',
+                fontFamily: 'Montserrat, sans-serif', marginTop: 16 }}>
+                {error}
+              </p>
+            )}
+            {success && (
+              <p style={{ color: '#27ae60', fontSize: 13, textAlign: 'center',
+                fontFamily: 'Montserrat, sans-serif', marginTop: 16 }}>
+                ✓ Анкета успешно сохранена!
+              </p>
+            )}
+
+            {/* Кнопка */}
+            <button
+              className={s.saveBtn}
+              onClick={handleSave}
+              disabled={loading}
+              style={{ opacity: loading ? 0.7 : 1 }}
+            >
+              {loading ? 'Сохраняем...' : 'Сохранить анкету'}
+            </button>
+
           </div>
 
-          
+          {/* Кастомный скроллбар */}
           <div className={s.scrollbarCol}>
             <div className={s.sbTrack}>
               <div className={s.sbThumb} style={{ top: `${thumbPct}%` }} />
