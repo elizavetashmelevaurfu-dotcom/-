@@ -8,7 +8,7 @@ export default function FormPage({ onBack, onLogoClick }) {
   const [thumbPct, setThumbPct] = useState(0);
 
   /* Имя */
-  const [name, setName] = useState('');
+  const [name,        setName]        = useState('');
   const [nameVisible, setNameVisible] = useState(true);
 
   /* Локация */
@@ -33,9 +33,10 @@ export default function FormPage({ onBack, onLogoClick }) {
   const [budgetMax,  setBudgetMax]  = useState('');
 
   /* Состояние запроса */
-  const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [loading,     setLoading]     = useState(false);
+  const [error,       setError]       = useState(null);
+  const [success,     setSuccess]     = useState(false);
+  const [validErrors, setValidErrors] = useState({});
 
   const metroTimeOpts = [
     { label: 'до 5 минут',  val: '5'     },
@@ -75,8 +76,41 @@ export default function FormPage({ onBack, onLogoClick }) {
     if (e.key === 'Enter') addTag(val, setVal, list, setList);
   };
 
-  /* Отправка на бек */
+  const clearErr = (key) => setValidErrors(p => { const n = { ...p }; delete n[key]; return n; });
+
+  /* Валидация */
+  const validate = () => {
+    const errs = {};
+    if (cities.length === 0)
+      errs.cities = 'Укажите хотя бы один город';
+    if (districts.length === 0)
+      errs.districts = 'Укажите хотя бы один район';
+    if (aptTypes.length === 0 && euroTypes.length === 0)
+      errs.aptTypes = 'Выберите тип квартиры';
+    if (!areaMin)
+      errs.areaMin = 'Укажите минимальную площадь';
+    if (!areaMax)
+      errs.areaMax = 'Укажите максимальную площадь';
+    if (!floorMin && !floorMax)
+      errs.floor = 'Укажите предпочтения по этажу';
+    if (finishes.length === 0)
+      errs.finishes = 'Выберите вид отделки';
+    if (!budgetMin)
+      errs.budgetMin = 'Укажите минимальный бюджет';
+    if (!budgetMax)
+      errs.budgetMax = 'Укажите максимальный бюджет';
+    return errs;
+  };
+
+  /* Отправка */
   const handleSave = async () => {
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setValidErrors(errs);
+      if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setValidErrors({});
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -106,9 +140,17 @@ export default function FormPage({ onBack, onLogoClick }) {
         <h1 className={s.pageTitle}>Моя анкета</h1>
 
         <div className={s.modalWrap}>
-
           <div className={s.modal} ref={scrollRef}>
             <button className={s.closeBtn} onClick={onBack}>×</button>
+
+            {/* Сводка ошибок */}
+            {Object.keys(validErrors).length > 0 && (
+              <div className={s.summaryErrors}>
+                {Object.values(validErrors).map((e, i) => (
+                  <p key={i}>⚠ {e}</p>
+                ))}
+              </div>
+            )}
 
             {/* Имя */}
             <input
@@ -133,17 +175,26 @@ export default function FormPage({ onBack, onLogoClick }) {
 
             <hr className={s.divider} />
 
-            {/* Локация */}
+            {/* ЛОКАЦИЯ */}
             <h3 className={s.sectionTitle}>Локация</h3>
 
             <div className={s.locRow}>
+              {/* Города — обязательно */}
               <div>
+                <p className={s.subTitle}>
+                  Желаемые города <span style={{ color: '#c0392b' }}>*</span>
+                </p>
                 <input
-                  className={s.input}
-                  placeholder="Введите город(а)"
+                  className={`${s.input} ${validErrors.cities ? s.inputError : ''}`}
+                  placeholder="Введите город и нажмите Enter"
                   value={cityInput}
                   onChange={e => setCityInput(e.target.value)}
-                  onKeyDown={e => keyAddTag(e, cityInput, setCityInput, cities, setCities)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      addTag(cityInput, setCityInput, cities, setCities);
+                      clearErr('cities');
+                    }
+                  }}
                 />
                 <div className={s.tagsRow}>
                   {cities.map(c => (
@@ -153,11 +204,15 @@ export default function FormPage({ onBack, onLogoClick }) {
                     </span>
                   ))}
                 </div>
+                {validErrors.cities && <p className={s.fieldError}>⚠ {validErrors.cities}</p>}
               </div>
+
+              {/* Метро */}
               <div>
+                <p className={s.subTitle}>Станции метро</p>
                 <input
                   className={s.input}
-                  placeholder="Введите ст. метро"
+                  placeholder="Введите ст. метро и нажмите Enter"
                   value={metroInput}
                   onChange={e => setMetroInput(e.target.value)}
                   onKeyDown={e => keyAddTag(e, metroInput, setMetroInput, metros, setMetros)}
@@ -174,13 +229,22 @@ export default function FormPage({ onBack, onLogoClick }) {
             </div>
 
             <div className={s.locRow}>
+              {/* Районы — обязательно */}
               <div>
+                <p className={s.subTitle}>
+                  Районы <span style={{ color: '#c0392b' }}>*</span>
+                </p>
                 <input
-                  className={s.input}
-                  placeholder="Введите район(ы)"
+                  className={`${s.input} ${validErrors.districts ? s.inputError : ''}`}
+                  placeholder="Введите район и нажмите Enter"
                   value={districtInput}
                   onChange={e => setDistrictInput(e.target.value)}
-                  onKeyDown={e => keyAddTag(e, districtInput, setDistrictInput, districts, setDistricts)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      addTag(districtInput, setDistrictInput, districts, setDistricts);
+                      clearErr('districts');
+                    }
+                  }}
                 />
                 <div className={s.tagsRow}>
                   {districts.map(d => (
@@ -190,7 +254,10 @@ export default function FormPage({ onBack, onLogoClick }) {
                     </span>
                   ))}
                 </div>
+                {validErrors.districts && <p className={s.fieldError}>⚠ {validErrors.districts}</p>}
               </div>
+
+              {/* Время до метро */}
               <div>
                 <p className={s.subTitle} style={{ marginTop: 0 }}>Сколько времени до метро</p>
                 <div className={s.cbGrid2}>
@@ -209,24 +276,30 @@ export default function FormPage({ onBack, onLogoClick }) {
 
             <hr className={s.divider} />
 
-            {/* Параметры квартиры */}
+            {/* ТИП КВАРТИРЫ — обязательно */}
             <h3 className={s.sectionTitle}>Параметры квартиры</h3>
-            <p className={s.subTitle}>Тип квартиры</p>
-            <div className={s.cbGrid4}>
+            <p className={s.subTitle}>
+              Тип квартиры <span style={{ color: '#c0392b' }}>*</span>
+            </p>
+            <div
+              className={s.cbGrid4}
+              style={validErrors.aptTypes ? { border: '1.5px solid #c0392b', borderRadius: 7, padding: 8 } : {}}
+            >
               {aptTypeOpts.map(o => (
                 <label key={o} className={s.cbRow}>
                   <input type="checkbox"
                     checked={aptTypes.includes(o)}
-                    onChange={() => toggle(aptTypes, setAptTypes, o)}
+                    onChange={() => { toggle(aptTypes, setAptTypes, o); clearErr('aptTypes'); }}
                   />
                   {o}
                 </label>
               ))}
             </div>
+            {validErrors.aptTypes && <p className={s.fieldError}>⚠ {validErrors.aptTypes}</p>}
 
             <hr className={s.divider} />
 
-            {/* Евро-формат */}
+            {/* ЕВРО-ФОРМАТ */}
             <div className={s.toggleRow}>
               Евро-формат квартиры (кухня совмещена с гостиной)
               <div
@@ -236,111 +309,149 @@ export default function FormPage({ onBack, onLogoClick }) {
                 <div className={`${s.toggleKnob} ${euroFormat ? s.toggleKnobOn : s.toggleKnobOff}`} />
               </div>
             </div>
-            <p className={s.subTitle}>Тип квартиры</p>
-            <div className={s.cbGrid3}>
-              {euroTypeOpts.map(o => (
-                <label key={o} className={s.cbRow}>
-                  <input type="checkbox"
-                    checked={euroTypes.includes(o)}
-                    onChange={() => toggle(euroTypes, setEuroTypes, o)}
-                  />
-                  {o}
-                </label>
-              ))}
-            </div>
+            {euroFormat && (
+              <>
+                <p className={s.subTitle}>Тип евро-квартиры</p>
+                <div className={s.cbGrid3}>
+                  {euroTypeOpts.map(o => (
+                    <label key={o} className={s.cbRow}>
+                      <input type="checkbox"
+                        checked={euroTypes.includes(o)}
+                        onChange={() => toggle(euroTypes, setEuroTypes, o)}
+                      />
+                      {o}
+                    </label>
+                  ))}
+                </div>
+              </>
+            )}
 
-            {/* Площадь */}
+            {/* ПЛОЩАДЬ — обязательно */}
             <div className={s.twoCol}>
               <div>
-                <p className={s.subTitle}>Минимальная площадь</p>
+                <p className={s.subTitle}>
+                  Минимальная площадь <span style={{ color: '#c0392b' }}>*</span>
+                </p>
                 <div className={s.inputWithUnit}>
-                  <input className={s.input} placeholder="Введите число"
-                    value={areaMin} onChange={e => setAreaMin(e.target.value)} />
+                  <input
+                    className={`${s.input} ${validErrors.areaMin ? s.inputError : ''}`}
+                    placeholder="Введите число"
+                    value={areaMin}
+                    onChange={e => { setAreaMin(e.target.value); clearErr('areaMin'); }}
+                  />
                   <span className={s.unit}>кв.м</span>
                 </div>
+                {validErrors.areaMin && <p className={s.fieldError}>⚠ {validErrors.areaMin}</p>}
               </div>
               <div>
-                <p className={s.subTitle}>Максимальная площадь</p>
+                <p className={s.subTitle}>
+                  Максимальная площадь <span style={{ color: '#c0392b' }}>*</span>
+                </p>
                 <div className={s.inputWithUnit}>
-                  <input className={s.input} placeholder="Введите число"
-                    value={areaMax} onChange={e => setAreaMax(e.target.value)} />
+                  <input
+                    className={`${s.input} ${validErrors.areaMax ? s.inputError : ''}`}
+                    placeholder="Введите число"
+                    value={areaMax}
+                    onChange={e => { setAreaMax(e.target.value); clearErr('areaMax'); }}
+                  />
                   <span className={s.unit}>кв.м</span>
                 </div>
+                {validErrors.areaMax && <p className={s.fieldError}>⚠ {validErrors.areaMax}</p>}
               </div>
             </div>
 
-            {/* Этаж */}
-            <p className={s.subTitle}>Этаж</p>
+            {/* ЭТАЖ — обязательно */}
+            <p className={s.subTitle}>
+              Предпочтения по этажу <span style={{ color: '#c0392b' }}>*</span>
+            </p>
             <div className={s.floorRow}>
               <span className={s.floorLabel}>от</span>
               <input className={s.floorBox} type="number" min="1" max="60"
-                value={floorMin} onChange={e => setFloorMin(Number(e.target.value))} />
+                value={floorMin}
+                onChange={e => { setFloorMin(Number(e.target.value)); clearErr('floor'); }}
+              />
               <input className={s.slider} type="range" min="1" max="60"
-                value={floorMin} onChange={e => setFloorMin(Number(e.target.value))} />
+                value={floorMin}
+                onChange={e => setFloorMin(Number(e.target.value))}
+              />
               <input className={s.slider} type="range" min="1" max="60"
-                value={floorMax} onChange={e => setFloorMax(Number(e.target.value))} />
+                value={floorMax}
+                onChange={e => setFloorMax(Number(e.target.value))}
+              />
               <span className={s.floorLabel}>до</span>
               <input className={s.floorBox} type="number" min="1" max="60"
-                value={floorMax} onChange={e => setFloorMax(Number(e.target.value))} />
+                value={floorMax}
+                onChange={e => setFloorMax(Number(e.target.value))}
+              />
             </div>
+            {validErrors.floor && <p className={s.fieldError}>⚠ {validErrors.floor}</p>}
 
-            {/* Вид отделки */}
-            <p className={s.subTitle}>Вид отделки</p>
-            <div className={s.cbGrid3}>
+            {/* ОТДЕЛКА — обязательно */}
+            <p className={s.subTitle}>
+              Вид отделки <span style={{ color: '#c0392b' }}>*</span>
+            </p>
+            <div
+              className={s.cbGrid3}
+              style={validErrors.finishes ? { border: '1.5px solid #c0392b', borderRadius: 7, padding: 8 } : {}}
+            >
               {finishOpts.map(o => (
                 <label key={o} className={s.cbRow}>
                   <input type="checkbox"
                     checked={finishes.includes(o)}
-                    onChange={() => toggle(finishes, setFinishes, o)}
+                    onChange={() => { toggle(finishes, setFinishes, o); clearErr('finishes'); }}
                   />
                   {o}
                 </label>
               ))}
             </div>
+            {validErrors.finishes && <p className={s.fieldError}>⚠ {validErrors.finishes}</p>}
 
             <hr className={s.divider} />
 
-            {/* Бюджет */}
+            {/* БЮДЖЕТ — обязательно */}
             <h3 className={s.sectionTitle}>Бюджет</h3>
             <div className={s.twoCol}>
               <div>
-                <p className={s.subTitle}>Минимальная стоимость</p>
+                <p className={s.subTitle}>
+                  Минимальная стоимость <span style={{ color: '#c0392b' }}>*</span>
+                </p>
                 <div className={s.inputWithUnit}>
-                  <input className={s.input} placeholder="Введите число"
-                    value={budgetMin} onChange={e => setBudgetMin(e.target.value)} />
+                  <input
+                    className={`${s.input} ${validErrors.budgetMin ? s.inputError : ''}`}
+                    placeholder="Введите число"
+                    value={budgetMin}
+                    onChange={e => { setBudgetMin(e.target.value); clearErr('budgetMin'); }}
+                  />
                   <span className={s.unit}>руб.</span>
                 </div>
+                {validErrors.budgetMin && <p className={s.fieldError}>⚠ {validErrors.budgetMin}</p>}
               </div>
               <div>
-                <p className={s.subTitle}>Максимальная стоимость</p>
+                <p className={s.subTitle}>
+                  Максимальная стоимость <span style={{ color: '#c0392b' }}>*</span>
+                </p>
                 <div className={s.inputWithUnit}>
-                  <input className={s.input} placeholder="Введите число"
-                    value={budgetMax} onChange={e => setBudgetMax(e.target.value)} />
+                  <input
+                    className={`${s.input} ${validErrors.budgetMax ? s.inputError : ''}`}
+                    placeholder="Введите число"
+                    value={budgetMax}
+                    onChange={e => { setBudgetMax(e.target.value); clearErr('budgetMax'); }}
+                  />
                   <span className={s.unit}>руб.</span>
                 </div>
+                {validErrors.budgetMax && <p className={s.fieldError}>⚠ {validErrors.budgetMax}</p>}
               </div>
             </div>
 
-            {/* Сообщения */}
-            {error && (
-              <p style={{ color: '#c0392b', fontSize: 13, textAlign: 'center',
-                fontFamily: 'Montserrat, sans-serif', marginTop: 16 }}>
-                {error}
-              </p>
-            )}
-            {success && (
-              <p style={{ color: '#27ae60', fontSize: 13, textAlign: 'center',
-                fontFamily: 'Montserrat, sans-serif', marginTop: 16 }}>
-                ✓ Анкета успешно сохранена!
-              </p>
-            )}
+            {/* Статус */}
+            {error   && <p className={s.msgError}>{error}</p>}
+            {success && <p className={s.msgSuccess}>✓ Анкета успешно сохранена!</p>}
 
             {/* Кнопка */}
             <button
               className={s.saveBtn}
               onClick={handleSave}
               disabled={loading}
-              style={{ opacity: loading ? 0.7 : 1 }}
             >
               {loading ? 'Сохраняем...' : 'Сохранить анкету'}
             </button>
