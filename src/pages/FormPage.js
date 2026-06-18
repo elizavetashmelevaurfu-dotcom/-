@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import { createAnketa } from '../api/anketa';
+//import { createAnketa } from '../api/anketa';
+//import { saveAnketaLocally } from './AnketyPage';
 import s from './FormPage.module.css';
+import { saveAnketa } from '../api/storage';
 
-export default function FormPage({ onBack, onLogoClick }) {
+export default function FormPage({ onBack, onLogoClick, onGoMyJK, onGoAnkety, onGoLeads }) {
   const scrollRef = useRef(null);
   const [thumbPct, setThumbPct] = useState(0);
 
@@ -37,6 +39,17 @@ export default function FormPage({ onBack, onLogoClick }) {
   const [error,       setError]       = useState(null);
   const [success,     setSuccess]     = useState(false);
   const [validErrors, setValidErrors] = useState({});
+  /* Frame 21 */
+const [isActive, setIsActive] = useState(true);
+
+const [cashOptionsSelected, setCashOptionsSelected] = useState([]);
+const [financeTools, setFinanceTools] = useState([]);
+const [financeComment, setFinanceComment] = useState('');
+const [monthlyPayment, setMonthlyPayment] = useState('');
+
+const [purchaseTerm, setPurchaseTerm] = useState('');
+const [completionYearFrom, setCompletionYearFrom] = useState(2019);
+const [completionYearTo, setCompletionYearTo] = useState(2040);
 
   const metroTimeOpts = [
     { label: 'до 5 минут',  val: '5'     },
@@ -51,6 +64,29 @@ export default function FormPage({ onBack, onLogoClick }) {
     'Черновая',    'Чистовая',                     'С отделкой и мебелью',
   ];
 
+  const cashOptions = [
+  'Да, есть вся сумма (наличные)',
+  'Да, есть вся сумма (безналичные)',
+  'Нет, планирую воспользоваться фин инструментами',
+];
+
+const financeOptions = [
+  'Ипотека',
+  'Рассрочка',
+  'Другое',
+  'Обмен квартиры',
+  'ИТ-ипотека',
+  'Военная ипотека',
+  'Семейная ипотека',
+  'ДВ ипотека',
+];
+
+const purchaseOptions = [
+  'В ближайшее время',
+  'В ближайший месяц',
+  'В ближайшие 3 месяца',
+  'В ближайшие полгода',
+];
   /* Кастомный скроллбар */
   useEffect(() => {
     const el = scrollRef.current;
@@ -104,40 +140,61 @@ export default function FormPage({ onBack, onLogoClick }) {
 
   /* Отправка */
   const handleSave = async () => {
-    const errs = validate();
-    if (Object.keys(errs).length > 0) {
-      setValidErrors(errs);
-      if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    setValidErrors({});
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-    try {
-      const res = await createAnketa({
-        cities, metros, districts,
-        metroTime, aptTypes,
-        euroFormat, euroTypes,
-        areaMin, areaMax,
-        floorMin, floorMax,
-        finishes,
-        budgetMin, budgetMax,
-      });
-      localStorage.setItem('anketaId', res.id);
-      setSuccess(true);
-    } catch (e) {
-      setError(e.message || 'Ошибка при сохранении');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const errs = validate();
+  if (Object.keys(errs).length > 0) {
+    setValidErrors(errs);
+    if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  setValidErrors({});
+  setLoading(true);
+  setError(null);
+  setSuccess(false);
+
+  try {
+    saveAnketa({
+      name, cities, metros, districts, metroTime,
+      aptTypes, euroTypes, euroFormat,
+      areaMin, areaMax, floorMin, floorMax,
+      finishes, budgetMin, budgetMax,
+      financeTools,
+    });
+    setSuccess(true);
+  } catch (e) {
+    setError(e.message || 'Ошибка при сохранении');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={s.page}>
-      <Navbar onLogoClick={onLogoClick} />
+      <Navbar onLogoClick={onLogoClick} onGoMyJK={onGoMyJK} onGoAnkety={onGoAnkety} onGoLeads={onGoLeads} />
       <div className={s.inner}>
-        <h1 className={s.pageTitle}>Моя анкета</h1>
+        <div className={s.headerRow}>
+  <div className={s.headerLeft}>
+    <h1 className={s.pageTitle}>Моя анкета</h1>
+
+    <div
+      className={`${s.toggle} ${isActive ? s.toggleOn : s.toggleOff}`}
+      onClick={() => setIsActive(!isActive)}
+    >
+      <div
+        className={`${s.toggleKnob}
+        ${isActive ? s.toggleKnobOn : s.toggleKnobOff}`}
+      />
+    </div>
+
+    <span className={s.activeText}>Активна</span>
+  </div>
+
+  <button
+    className={s.topSaveBtn}
+    onClick={handleSave}
+  >
+    Сохранить изменения
+  </button>
+</div>
 
         <div className={s.modalWrap}>
           <div className={s.modal} ref={scrollRef}>
@@ -442,7 +499,165 @@ export default function FormPage({ onBack, onLogoClick }) {
                 {validErrors.budgetMax && <p className={s.fieldError}>⚠ {validErrors.budgetMax}</p>}
               </div>
             </div>
+              <hr className={s.divider} />
 
+<h2 className={s.frameTitle}>
+  Есть вся сумма целиком?
+</h2>
+
+<div className={s.financeGrid}>
+  {cashOptions.map(item => (
+    <label key={item} className={s.cbRow}>
+      <input
+        type="checkbox"
+        checked={cashOptionsSelected.includes(item)}
+        onChange={() =>
+          toggle(
+            cashOptionsSelected,
+            setCashOptionsSelected,
+            item
+          )
+        }
+      />
+      {item}
+    </label>
+  ))}
+</div>
+
+<h2 className={s.frameTitle}>
+  Финансовые инструменты
+</h2>
+
+<div className={s.financeToolsGrid}>
+  {financeOptions.map(item => (
+    <label key={item} className={s.cbRow}>
+      <input
+        type="checkbox"
+        checked={financeTools.includes(item)}
+        onChange={() =>
+          toggle(
+            financeTools,
+            setFinanceTools,
+            item
+          )
+        }
+      />
+      {item}
+    </label>
+  ))}
+</div>
+
+<input
+  className={s.input}
+  placeholder="Введите комментарий"
+  value={financeComment}
+  onChange={(e) =>
+    setFinanceComment(e.target.value)
+  }
+/>
+
+<h2 className={s.frameTitle}>
+  Удобный платеж по ипотеке/рассрочке
+</h2>
+
+<div className={s.paymentRow}>
+  <input
+    className={s.paymentInput}
+    placeholder="Введите число"
+    value={monthlyPayment}
+    onChange={(e) =>
+      setMonthlyPayment(e.target.value)
+    }
+  />
+
+  <span>руб/мес.</span>
+</div>
+
+<h2 className={s.frameTitle}>
+  Сроки
+</h2>
+
+<p className={s.subTitle}>
+  Срок приобретения
+</p>
+
+<div className={s.purchaseGrid}>
+  {purchaseOptions.map(item => (
+    <label key={item} className={s.cbRow}>
+      <input
+        type="radio"
+        name="purchaseTerm"
+        checked={purchaseTerm === item}
+        onChange={() =>
+          setPurchaseTerm(item)
+        }
+      />
+      {item}
+    </label>
+  ))}
+</div>
+
+<p className={s.hintText}>
+  *Если вы планируете покупку в течение года
+  и больше, рекомендуем заполнить анкету
+  ближе к дате приобретения.
+</p>
+
+<p className={s.subTitle}>
+  Срок сдачи объекта
+</p>
+
+<div className={s.floorRow}>
+  <span className={s.floorLabel}>от</span>
+
+  <input
+    className={s.floorBox}
+    value={completionYearFrom}
+    onChange={(e) =>
+      setCompletionYearFrom(
+        Number(e.target.value)
+      )
+    }
+  />
+
+  <input
+    type="range"
+    min="2019"
+    max="2040"
+    value={completionYearFrom}
+    className={s.slider}
+    onChange={(e) =>
+      setCompletionYearFrom(
+        Number(e.target.value)
+      )
+    }
+  />
+
+  <input
+    type="range"
+    min="2019"
+    max="2040"
+    value={completionYearTo}
+    className={s.slider}
+    onChange={(e) =>
+      setCompletionYearTo(
+        Number(e.target.value)
+      )
+    }
+  />
+
+  <span className={s.floorLabel}>до</span>
+
+  <input
+    className={s.floorBox}
+    value={completionYearTo}
+    onChange={(e) =>
+      setCompletionYearTo(
+        Number(e.target.value)
+      )
+    }
+  />
+</div>
             {/* Статус */}
             {error   && <p className={s.msgError}>{error}</p>}
             {success && <p className={s.msgSuccess}>✓ Анкета успешно сохранена!</p>}

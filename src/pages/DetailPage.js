@@ -2,10 +2,10 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import s from './DetailPage.module.css';
 
-export default function DetailPage({ onFillForm, onBack, onLogoClick }) {
+export default function DetailPage({ onFillForm, onBack, onLogoClick, onGoMyJK, onGoAnkety, onGoLeads }) {
   return (
     <div className={s.page}>
-      <Navbar onLogoClick={onLogoClick} />
+      <Navbar onLogoClick={onLogoClick} onGoMyJK={onGoMyJK} onGoAnkety={onGoAnkety} onGoLeads={onGoLeads} />
       <div className={s.modal}>
         <h2 className={s.title}>
           ПЕНАТЫ — ваш личный хранитель в поиске жилья.

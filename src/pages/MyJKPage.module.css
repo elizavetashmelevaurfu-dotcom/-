@@ -1,0 +1,70 @@
+.page {
+  min-height: 100vh;
+  background: #fff;
+  padding-top: 76px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 44px 28px 80px;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin-bottom: 24px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Frame 28 – dark brown card row */
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #56280F;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 64px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.card:hover { background: #3d1c07; }
+
+.cardName {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  font-family: 'Playfair Display', serif;
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+}
+
+.heartBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s;
+}
+.heartBtn:hover { transform: scale(1.15); }

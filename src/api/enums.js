@@ -1,4 +1,4 @@
-// FlatType: 0-7
+// FlatType: 1-7
 export const FLAT_TYPE = {
   'Студия':       1,
   '1к квартира':  2,
@@ -9,7 +9,7 @@ export const FLAT_TYPE = {
   'Пентхаус':     7,
 };
 
-// FinishingType: 0-6
+// FinishingType: 1-6
 export const FINISHING_TYPE = {
   'Без отделки':                    1,
   'Черновая':                       2,
@@ -19,7 +19,7 @@ export const FINISHING_TYPE = {
   'С отделкой и мебелью':           6,
 };
 
-// MetroTime: 0-4
+// MetroTime: 1-4
 export const METRO_TIME = {
   '5':     1,   // до 5 минут
   '5-10':  2,   // 5-10 минут

@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import s from './Navbar.module.css';
-
-
-const LOGO_SRC = `${process.env.PUBLIC_URL} /logo.png`;
+import { logout, isLoggedIn } from '../api/auth';
 
 const ChevronDown = () => (
   <svg width="11" height="7" viewBox="0 0 11 7" fill="none">
@@ -20,26 +18,83 @@ const AvatarIcon = () => (
   </svg>
 );
 
-export default function Navbar({ onLogoClick, isHome }) {
+const LogoutIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3M10 11l3-3-3-3M13 8H6"
+      stroke="#56280F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export default function Navbar({ onLogoClick, isHome, onGoMyJK, onGoAnkety, onGoLeads }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const loggedIn = isLoggedIn();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+    if (onLogoClick) onLogoClick(); // go home
+  };
+
+  const handleMenuItem = (fn) => {
+    setMenuOpen(false);
+    if (fn) fn();
+  };
+
   return (
     <header className={s.bar}>
-
-      
       <div className={s.logo} onClick={onLogoClick}>
-        <img src={LOGO_SRC} alt="Логотип" className={s.logoImg} />
+        <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Логотип" className={s.logoImg} />
       </div>
 
-      
       <div className={s.right}>
         <button className={s.cityBtn}>
           Екатеринбург&nbsp;<ChevronDown />
         </button>
 
         {isHome && <span>Войти</span>}
-        <AvatarIcon />
-        {!isHome && <ChevronDown />}
-      </div>
 
+        {/* Profile button with dropdown */}
+        <div className={s.profileWrap} ref={menuRef}>
+          <button
+            className={s.profileBtn}
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label="Меню профиля"
+          >
+            <AvatarIcon />
+            {!isHome && <ChevronDown />}
+          </button>
+
+          {menuOpen && (
+            <div className={s.dropdown}>
+              <button className={s.dropItem} onClick={() => handleMenuItem(onGoMyJK)}>
+                Мои ЖК
+              </button>
+              <button className={s.dropItem} onClick={() => handleMenuItem(onGoAnkety)}>
+                Анкеты
+              </button>
+              <button className={s.dropItem} onClick={() => handleMenuItem(onGoLeads)}>
+                Целевые лиды
+              </button>
+              <div className={s.dropDivider} />
+              <button className={`${s.dropItem} ${s.dropItemLogout}`} onClick={handleLogout}>
+                Выйти&nbsp;&nbsp;<LogoutIcon />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </header>
   );
 }

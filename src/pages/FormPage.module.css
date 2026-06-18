@@ -1,4 +1,4 @@
-
+/* ── PAGE ── */
 .page {
   min-height: 100vh;
   background: #fff;
@@ -17,7 +17,7 @@
   margin-bottom: 20px;
 }
 
-
+/* ── MODAL LAYOUT ── */
 .modalWrap {
   display: flex;
   align-items: stretch;
@@ -50,7 +50,7 @@
 }
 .closeBtn:hover { color: #1E1E1E; }
 
-
+/* ── CUSTOM SCROLLBAR ── */
 .scrollbarCol {
   width: 20px;
   margin-left: 10px;
@@ -79,7 +79,7 @@
   transition: top 0.08s linear;
 }
 
-
+/* ── TYPOGRAPHY ── */
 .sectionTitle {
   font-family: 'Playfair Display', serif;
   font-size: 17px;
@@ -102,7 +102,7 @@
   margin: 20px 0;
 }
 
-
+/* ── INPUTS ── */
 .input {
   width: 100%;
   height: 40px;
@@ -118,8 +118,9 @@
 }
 .input:focus { border-color: #B47552; outline: none; }
 .input::placeholder { color: #C0C0C0; }
+.inputError { border-color: #c0392b !important; }
 
-
+/* ── GRIDS ── */
 .twoCol {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -135,7 +136,7 @@
   margin-bottom: 8px;
 }
 
-
+/* ── TAGS ── */
 .tagsRow {
   display: flex;
   flex-wrap: wrap;
@@ -159,7 +160,7 @@
 }
 .tag:hover { background: #3d1c07; }
 
-
+/* ── CHECKBOXES ── */
 .cbRow {
   display: flex;
   align-items: flex-start;
@@ -193,7 +194,7 @@
   display: block;
 }
 
-
+/* ── TOGGLE ── */
 .toggleRow {
   display: flex;
   align-items: center;
@@ -228,7 +229,7 @@
 .toggleKnobOff { left: 3px; }
 .toggleKnobOn  { left: 19px; }
 
-
+/* ── INPUT + UNIT ── */
 .inputWithUnit {
   display: flex;
   align-items: center;
@@ -244,12 +245,12 @@
   flex-shrink: 0;
 }
 
-
+/* ── FLOOR SLIDER ── */
 .floorRow {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
 }
 
 .floorLabel {
@@ -280,7 +281,33 @@
   height: 4px;
 }
 
+/* ── VALIDATION ── */
+.fieldError {
+  font-size: 11px;
+  color: #c0392b;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 2px;
+  margin-bottom: 6px;
+}
 
+.summaryErrors {
+  background: rgba(192, 57, 43, 0.06);
+  border: 1.5px solid #c0392b;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.summaryErrors p {
+  font-size: 12px;
+  color: #c0392b;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+.summaryErrors p:last-child { margin-bottom: 0; }
+
+/* ── SAVE BUTTON ── */
 .saveBtn {
   display: block;
   margin: 28px auto 0;
@@ -296,4 +323,182 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.saveBtn:hover { background: #3d1c07; }
+.saveBtn:hover    { background: #3d1c07; }
+.saveBtn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.msgError {
+  color: #c0392b;
+  font-size: 13px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 16px;
+}
+
+.msgSuccess {
+  color: #27ae60;
+  font-size: 13px;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 16px;
+}
+/* ==========================
+   FRAME 21
+========================== */
+
+/* ==========================
+   FRAME 21
+========================== */
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.activeText {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1E1E1E;
+}
+
+.topSaveBtn {
+  width: 236px;
+  height: 42px;
+  border: none;
+  border-radius: 8px;
+  background: #56280F;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.topSaveBtn:hover {
+  background: #3d1c07;
+}
+
+.frameTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1E1E1E;
+  margin-top: 36px;
+  margin-bottom: 20px;
+}
+
+.financeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 50px;
+  margin-bottom: 24px;
+}
+
+.financeToolsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px 24px;
+  margin-bottom: 18px;
+}
+
+.paymentRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.paymentInput {
+  width: 280px;
+  height: 42px;
+  border: 1.5px solid #C0C0C0;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: 'Montserrat', sans-serif;
+  color: #1E1E1E;
+  background: #FFFFFF;
+}
+
+.paymentInput:focus {
+  outline: none;
+  border-color: #B47552;
+}
+
+.purchaseGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 24px;
+  margin-bottom: 12px;
+}
+
+.purchaseGrid input[type="radio"] {
+  accent-color: #56280F;
+}
+
+.hintText {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #737373;
+  margin-bottom: 24px;
+}
+
+/* чтобы чекбоксы и радио выглядели одинаково */
+
+.financeGrid .cbRow,
+.financeToolsGrid .cbRow,
+.purchaseGrid .cbRow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #1E1E1E;
+}
+
+/* адаптив */
+
+@media (max-width: 1200px) {
+  .financeToolsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .financeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .purchaseGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .paymentRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .paymentInput {
+    width: 100%;
+  }
+
+  .financeToolsGrid {
+    grid-template-columns: 1fr;
+  }
+}
