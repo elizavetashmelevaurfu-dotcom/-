@@ -4,7 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="837109fd-6530-4078-bc2b-42a16260f587" name="Changes" comment="" />
+    <list default="true" id="837109fd-6530-4078-bc2b-42a16260f587" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/DTO/RegisterRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/DTO/RegistrationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/controllers/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/exciption/BusinessException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/exciption/EmailAlreadyExistsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/exciption/UsernameAlreadyExistsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/models/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/models/UserStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/urfu/backend/service/RegistrationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,7 +44,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "restructure",
+    "git-widget-placeholder": "feature/registration",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Pet-projects/BlockChain_Voting",
     "project.structure.last.edited": "Modules",
