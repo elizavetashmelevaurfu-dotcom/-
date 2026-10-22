@@ -18,7 +18,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class RegistrationService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder; // Бин из SecurityConfig
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public RegistrationResponse register(RegisterRequest request) {

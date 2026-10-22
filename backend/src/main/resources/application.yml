@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:sqlite:./app.db
+    url: jdbc:sqlite:app.db
     driver-class-name: org.sqlite.JDBC
     hikari:
-      connectionInitSql: PRAGMA foreign_keys=1
+      connection-init-sql: PRAGMA foreign_keys=1
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
