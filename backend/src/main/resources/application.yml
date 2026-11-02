@@ -1,11 +1,18 @@
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # 24 часа (думаю хватит)
 spring:
   datasource:
-    url: jdbc:sqlite:app.db
-    driver-class-name: org.sqlite.JDBC
-    hikari:
-      connection-init-sql: PRAGMA foreign_keys=1
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/appdb}
+    username: ${SPRING_DATASOURCE_USERNAME:appuser}
+    password: ${SPRING_DATASOURCE_PASSWORD:apppassword}
+    driver-class-name: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: update # Для разработки; не забыть поменять!!! (напомните если что)
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

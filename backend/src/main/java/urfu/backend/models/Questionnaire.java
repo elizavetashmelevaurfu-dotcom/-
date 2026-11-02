@@ -19,6 +19,10 @@ public class Questionnaire {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "filter_cities", joinColumns = @JoinColumn(name = "filter_id"))
     @Column(name = "city", nullable = false)

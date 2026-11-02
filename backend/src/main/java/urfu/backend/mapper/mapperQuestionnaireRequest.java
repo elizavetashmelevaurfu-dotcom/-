@@ -36,4 +36,30 @@ public class mapperQuestionnaireRequest {
 
         return filter;
     }
+
+    public void updateEntity(Questionnaire filter, QuestionnaireRequest request) {
+        filter.getCities().clear();
+        filter.getCities().addAll(request.cities());
+
+        filter.getDistricts().clear();
+        filter.getDistricts().addAll(request.districts());
+
+        filter.getMetroStations().clear();
+        if (request.metroStations() != null) {
+            filter.getMetroStations().addAll(request.metroStations());
+        }
+
+        filter.getApartmentTypes().clear();
+        filter.getApartmentTypes().addAll(request.apartmentTypes());
+
+        filter.setMaxWalkTimeToMetro(request.maxWalkTimeToMetro());
+        filter.setMinArea(request.minArea());
+        filter.setMaxArea(request.maxArea());
+        filter.setMinFloor(request.minFloor());
+        filter.setMaxFloor(request.maxFloor());
+        filter.setRenovation(request.renovation());
+        filter.setPurchaseTimeframe(request.purchaseTimeframe());
+        filter.setMinCompletionYear(request.minCompletionYear());
+        filter.setMaxCompletionYear(request.maxCompletionYear());
+    }
 }
