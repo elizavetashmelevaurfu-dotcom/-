@@ -9,6 +9,8 @@ import urfu.backend.DTO.QuestionnaireRequest;
 import urfu.backend.models.Questionnaire;
 import urfu.backend.service.QuestionnaireService;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/questionnaire")
 @RequiredArgsConstructor
@@ -25,14 +27,14 @@ public class QuestionnaireController {
 
     @Operation(summary = "Получить анкету по ID")
     @GetMapping("/{id}")
-    public Questionnaire getById(@PathVariable Long id) {
+    public Questionnaire getById(@PathVariable UUID id) {
         return questionnaireService.getById(id);
     }
 
     @Operation(summary = "Обновить анкету")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable Long id, @Valid @RequestBody QuestionnaireRequest request) {
+    public void update(@PathVariable UUID id, @Valid @RequestBody QuestionnaireRequest request) {
         questionnaireService.update(id, request);
     }
 
@@ -40,7 +42,7 @@ public class QuestionnaireController {
     @Operation(summary = "Удалить анкету")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         questionnaireService.delete(id);
     }
 }

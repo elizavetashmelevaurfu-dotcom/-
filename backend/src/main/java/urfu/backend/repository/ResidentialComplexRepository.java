@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import urfu.backend.models.ResidentialComplex;
 
+import java.util.UUID;
+
 @Repository
-public interface ResidentialComplexRepository extends JpaRepository<ResidentialComplex, Long> {
+public interface ResidentialComplexRepository extends JpaRepository<ResidentialComplex, UUID> {
 }

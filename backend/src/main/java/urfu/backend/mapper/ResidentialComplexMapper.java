@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import urfu.backend.DTO.ResidentialComplexRequest;
 import urfu.backend.models.ResidentialComplex;
 
-import java.util.ArrayList;
-
 @Component
 public class ResidentialComplexMapper {
 
@@ -41,5 +39,15 @@ public class ResidentialComplexMapper {
 
         entity.getFinancialInstruments().clear();
         if (request.financialInstruments() != null) entity.getFinancialInstruments().addAll(request.financialInstruments());
+
+        if (request.removeRender()) {
+            entity.setRenderPhoto(null);
+            entity.setRenderPhotoFilename(null);
+            entity.setRenderPhotoContentType(null);
+        }
+        if (request.removePresentation()) {
+            entity.setPresentationPdf(null);
+            entity.setPresentationFilename(null);
+        }
     }
 }

@@ -33,5 +33,8 @@ public record ResidentialComplexRequest(
         List<String> financialInstruments,
 
         @NotNull @Min(2000) @Max(2100)
-        Integer CompletionYear
+        Integer CompletionYear,
+
+        boolean removeRender,
+        boolean removePresentation
 ) {}

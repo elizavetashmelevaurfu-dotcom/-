@@ -3,6 +3,8 @@ package urfu.backend.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,4 +67,25 @@ public class ResidentialComplex {
 
     @Column(nullable = false)
     private Integer completionYear;
+
+    //Рендер
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "render_photo")
+    private byte[] renderPhoto;
+
+    @Column(name = "render_photo_filename")
+    private String renderPhotoFilename;
+
+    @Column(name = "render_photo_content_type")
+    private String renderPhotoContentType;
+
+    //Презентация
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "presentation_pdf")
+    private byte[] presentationPdf;
+
+    @Column(name = "presentation_filename")
+    private String presentationFilename;
 }

@@ -14,6 +14,8 @@ import urfu.backend.models.User;
 import urfu.backend.repository.QuestionnaireRepository;
 import urfu.backend.repository.UserRepository;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class QuestionnaireService {
@@ -35,7 +37,7 @@ public class QuestionnaireService {
     }
 
     @Transactional(readOnly = true)
-    public Questionnaire getById(Long id) {
+    public Questionnaire getById(UUID id) {
         Questionnaire questionnaire = questionnaireRepository.findById(id)
                 .orElseThrow(() -> new QuestionnaireNotFoundException(id));
 
@@ -44,7 +46,7 @@ public class QuestionnaireService {
     }
 
     @Transactional
-    public void update(Long id, QuestionnaireRequest request) {
+    public void update(UUID id, QuestionnaireRequest request) {
         validateRanges(request);
 
         Questionnaire entity = questionnaireRepository.findById(id)
@@ -56,7 +58,7 @@ public class QuestionnaireService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Questionnaire entity = questionnaireRepository.findById(id)
                 .orElseThrow(() -> new QuestionnaireNotFoundException(id));
 
